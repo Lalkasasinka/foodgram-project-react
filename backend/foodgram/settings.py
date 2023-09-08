@@ -10,7 +10,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', '')
 
 DEBUG = os.getenv('DEBUG', False) == 'True'
 
-ALLOWED_HOSTS = [os.getenv('IP'),'127.0.0.1', 'localhost', os.getenv('DAEMON')]
+ALLOWED_HOSTS = [os.getenv('IP'), '127.0.0.1', 'localhost', os.getenv('DAEMON')]
 
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000']
 

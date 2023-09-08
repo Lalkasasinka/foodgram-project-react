@@ -7,7 +7,6 @@ from djoser.serializers import (
     UserCreateSerializer as DjoserUserCreateSerializer,
     UserSerializer as DjoserUserSerializer)
 from users.models import User, Follow
-from rest_framework.permissions import Curren
 
 
 class UserCreateSerializer(DjoserUserCreateSerializer):
