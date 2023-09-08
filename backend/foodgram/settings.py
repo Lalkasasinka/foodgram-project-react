@@ -6,7 +6,7 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY', '')
+SECRET_KEY = os.getenv('SECRET_KEY', 'w')
 
 DEBUG = os.getenv('DEBUG', False) == 'True'
 
@@ -135,7 +135,7 @@ DJOSER = {
         'current_user': 'api.serializers.UsersSerializer',
     },
     'PERMISSIONS': {
-        'user': ('rest_framework.permissions.CurrentUserOrAdminOrReadOnly',),
+        'user': ('djoser.permissions.CurrentUserOrAdminOrReadOnly',),
         'user_list': ('rest_framework.permissions.AllowAny',),
     }
 }
