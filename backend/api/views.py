@@ -104,9 +104,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         string = 'Покупки: '
         ingredients = IngredientInRecipe.objects.filter(
             recipe__shop__author=request.user
-            ).values(
-                'ingredient__name', 'ingredient__measurement_unit'
-            ).annotate(amount=Sum('amount'))
+        ).values(
+            'ingredient__name', 'ingredient__measurement_unit'
+        ).annotate(amount=Sum('amount'))
         for num, i in enumerate(ingredients):
             string += (
                 f'\n-{i["ingredient__name"]} - {i["amount"]} '

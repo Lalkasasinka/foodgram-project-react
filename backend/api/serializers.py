@@ -7,6 +7,7 @@ from djoser.serializers import (
     UserCreateSerializer as DjoserUserCreateSerializer,
     UserSerializer as DjoserUserSerializer)
 from users.models import User, Follow
+from rest_framework.permissions import Curren
 
 
 class UserCreateSerializer(DjoserUserCreateSerializer):
@@ -114,12 +115,12 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             amount = i['amount']
             if i['id'] in list:
                 raise serializers.ValidationError({
-                   'ingredient': 'Ингредиенты не могут повторяться!'
+                    'ingredient': 'Ингредиенты не могут повторяться!'
                 })
             list.append(i['id'])
             if int(amount) < 1:
                 raise serializers.ValidationError({
-                   'amount': 'Количество ингредиента должно быть больше 0!'
+                    'amount': 'Количество ингредиента должно быть больше 0!'
                 })
         for i in tags:
             if i == []:
