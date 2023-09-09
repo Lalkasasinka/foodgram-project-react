@@ -1,3 +1,4 @@
+from django.db import transaction
 from djoser.serializers import (
     UserCreateSerializer as DjoserUserCreateSerializer,
     UserSerializer as DjoserUserSerializer)
@@ -110,30 +111,37 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         ingredients = self.initial_data.get('ingredients')
         tags = self.initial_data.get('tags')
         list = []
-        for i in ingredients:
-            amount = i['amount']
-            if i['id'] in list:
+        if not ingredients:
+            raise serializers.ValidationError(
+                {'ingredients': 'Нужно выбрать хотя бы один ингредиент!'})
+        for ingredient in ingredients:
+            amount = ingredient['amount']
+            if ingredient['id'] in list:
                 raise serializers.ValidationError({
                     'ingredient': 'Ингредиенты не могут повторяться!'
                 })
-            list.append(i['id'])
+            list.append(ingredient['id'])
             if int(amount) < 1:
                 raise serializers.ValidationError({
                     'amount': 'Количество ингредиента должно быть больше 0!'
                 })
-        for i in tags:
-            if i == []:
-                raise serializers.ValidationError(
-                    {'tags': 'Нужно выбрать хотя бы один тег!'})
+        if not tags:
+            raise serializers.ValidationError(
+                {'tags': 'Нужно выбрать хотя бы один тег!'})
         return data
 
     def create_ingredients(self, ingredients, recipe):
-        for i in ingredients:
-            ingredient = Ingredient.objects.get(id=i['id'])
-            IngredientInRecipe.objects.create(
-                ingredient=ingredient, recipe=recipe, amount=i['amount']
+        for ingredient in ingredients:
+            ingredienst = Ingredient.objects.get(id=ingredient['id'])
+            IngredientInRecipe.objects.bulk_create(
+                [IngredientInRecipe(
+                    ingredient=ingredienst, recipe=recipe,
+                    amount=ingredient['amount']
+                )
+                ]
             )
 
+    @transaction.atomic
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
@@ -142,6 +150,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         self.create_ingredients(ingredients, recipe)
         return recipe
 
+    @transaction.atomic
     def update(self, instance, validated_data):
         tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
